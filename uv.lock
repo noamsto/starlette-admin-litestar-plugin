@@ -634,7 +634,7 @@ dependencies = [
 ]
 
 [package.dev-dependencies]
-lint = [
+dev = [
     { name = "deptry" },
     { name = "mypy" },
     { name = "ruff" },
@@ -648,7 +648,7 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-lint = [
+dev = [
     { name = "deptry", specifier = ">=0.23.0" },
     { name = "mypy", specifier = ">=1.14.1" },
     { name = "ruff", specifier = ">=0.9.4" },
