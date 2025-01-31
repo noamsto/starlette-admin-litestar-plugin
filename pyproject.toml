@@ -5,7 +5,7 @@ description = "Starlette Admin plugin for LiteStar"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-  "advanced-alchemy>=0.27.1",
+  "advanced-alchemy>=0.30.3",
   "litestar>=2.14.0",
   "starlette-admin>=0.15.0rc5",
 ]
