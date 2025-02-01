@@ -82,12 +82,13 @@ class StarlettAdminPluginConfig:
     favicon_url: str | EmptyType = Empty
 
     def to_dict(self):
-        """Convert config to dictionary, excluding unset (Empty) values.
-
-        Returns:
-            dict: Dictionary containing only set configuration values
-        """
-        return {k: v for k, v in asdict(self).items() if v is not Empty}
+        """Convert config to dictionary, excluding unset (Empty) values."""
+        result = {}
+        for field in self.__dataclass_fields__:
+            value = getattr(self, field)
+            if value is not Empty:
+                result[field] = value
+        return result
 
 
 class StarletteAdminPlugin(InitPluginProtocol):
@@ -99,7 +100,9 @@ class StarletteAdminPlugin(InitPluginProtocol):
         """Initializes the starlette-adminPlugin."""
         self.views = list(value_or_default(starlette_admin_config.views, []))
         self.starlette_app = Starlette()
-        self.admin = Admin(**starlette_admin_config.to_dict())
+        config_dict = starlette_admin_config.to_dict()
+        config_dict.pop("views")
+        self.admin = Admin(**config_dict)
         self.admin.mount_to(self.starlette_app, redirect_slashes=False)
         self.starlette_app.add_middleware(PathFixMiddleware, base_url=self.admin.base_url)
         # disables redirecting based on absence/presence of trailing slashes
