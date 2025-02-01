@@ -19,6 +19,10 @@ default-groups = ["dev"]
 
 [tool.ruff]
 line-length = 100
+exclude = [".git", "__pycache__", "build", "dist"]
+
+[tool.ruff.lint]
+
 select = [
   "ARG",   # flake8-unused-arguments
   "ASYNC", # flake8-async
@@ -40,14 +44,14 @@ select = [
 ignore = [
   "E501", # line too long (handled by line-length)
 ]
-exclude = [".git", "__pycache__", "build", "dist"]
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?)|request)$"
-isort.known-first-party = ["starlette_admin_litestar_plugin"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"] # Ignore unused imports in __init__.py files
 
+
 [tool.ruff.lint.isort]
+known-first-party = ["starlette_admin_litestar_plugin"]
 combine-as-imports = true
 
 [tool.ruff.format]
