@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
   "advanced-alchemy>=0.30.3",
   "litestar>=2.14.0",
+  "starlette>=0.45.3",
   "starlette-admin>=0.15.0rc5",
 ]
 
