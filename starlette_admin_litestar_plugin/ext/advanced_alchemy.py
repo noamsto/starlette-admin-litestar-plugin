@@ -2,7 +2,6 @@ import datetime
 from dataclasses import dataclass
 from typing import Any
 
-from advanced_alchemy.types import DateTimeUTC
 from starlette.datastructures import FormData
 from starlette.requests import Request
 from starlette_admin import RequestAction
@@ -25,21 +24,16 @@ class DateTimeUTCField(DateTimeField):
         assume_local: If True, assumes input without timezone is in local time
     """
 
-    assume_local: bool = True
-    class_: str = "field-datetime-utc form-control"
+    form_alt_format: str | None = "F j, Y  H:i:S (\\UTC)"
 
     async def parse_form_data(
         self, request: Request, form_data: FormData, _action: RequestAction
     ) -> datetime.datetime | None:
         try:
-            dt = datetime.fromisoformat(form_data.get(self.id))  # type: ignore
+            dt = datetime.datetime.fromisoformat(form_data.get(self.id))  # type: ignore
             if dt.tzinfo is None:
-                if self.assume_local:  # noqa: SIM108
-                    # Assume local time and convert to UTC
-                    dt = dt.astimezone()
-                else:
-                    # Assume UTC
-                    dt = dt.replace(tzinfo=datetime.UTC)
+                # Assume UTC
+                dt = dt.replace(tzinfo=datetime.UTC)
             else:
                 # Convert to UTC
                 dt = dt.astimezone(datetime.UTC)
@@ -54,13 +48,7 @@ class DateTimeUTCField(DateTimeField):
         if value.tzinfo is None:
             value = value.replace(tzinfo=datetime.UTC)
 
-        if action == RequestAction.EDIT:
-            # For edit form, return ISO format in UTC
-            return value.astimezone(datetime.UTC).isoformat()
-        else:
-            # For display, convert to local time
-            local_dt = value.astimezone()
-            return format_datetime(local_dt, self.output_format)
+        return format_datetime(value, format="%B %d, %Y %H:%M:%S %Z", tzinfo=datetime.UTC)
 
 
 class GUIDCoverter(ModelConverter):
@@ -70,7 +58,7 @@ class GUIDCoverter(ModelConverter):
             **self._field_common(*args, **kwargs), **self._string_common(*args, **kwargs)
         )
 
-    @converts(DateTimeUTC)
+    @converts("DateTimeUTC")
     def conv_standard_datetime(self, *args: Any, **kwargs: Any) -> DateTimeUTCField:
         return DateTimeUTCField(**self._field_common(*args, **kwargs))
 
@@ -105,3 +93,4 @@ class UUIDModelView(ModelView):
             self.exclude_fields_from_detail = ["_sentinel"]
 
         super().__init__(model, icon, name, label, identity, GUIDCoverter())
+        print(self.fields)
