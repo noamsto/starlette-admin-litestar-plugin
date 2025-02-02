@@ -1,28 +1,38 @@
 [project]
-name = "starlette-admin-litestar-plugin"
-version = "0.1.0"
-description = "Starlette Admin plugin for LiteStar"
-readme = "README.md"
+description     = "Starlette Admin plugin for LiteStar"
+name            = "starlette-admin-litestar-plugin"
+readme          = "README.md"
 requires-python = ">=3.12"
+version         = "0.1.0"
+
 dependencies = [
-  "advanced-alchemy>=0.30.3",
   "litestar>=2.14.0",
   "starlette>=0.45.3",
   "starlette-admin>=0.15.0rc5",
 ]
 
 [dependency-groups]
-dev = ["deptry>=0.23.0", "mypy>=1.14.1", "ruff>=0.9.4"]
+dev = [
+  "deptry>=0.23.0",
+  "mypy>=1.14.1",
+  "ruff>=0.9.4",
+  "advanced-alchemy>=0.30.3",
+]
+
 
 [tool.uv]
 default-groups = ["dev"]
 
 [tool.ruff]
+exclude     = [".git", "__pycache__", "build", "dist"]
 line-length = 100
-exclude = [".git", "__pycache__", "build", "dist"]
 
 [tool.ruff.lint]
 
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?)|request)$"
+ignore = [
+  "E501", # line too long (handled by line-length)
+]
 select = [
   "ARG",   # flake8-unused-arguments
   "ASYNC", # flake8-async
@@ -41,37 +51,33 @@ select = [
   "W",     # pycodestyle warnings
   "TC",    # flake8-typing-imports
 ]
-ignore = [
-  "E501", # line too long (handled by line-length)
-]
-dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?)|request)$"
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"] # Ignore unused imports in __init__.py files
 
 
 [tool.ruff.lint.isort]
-known-first-party = ["starlette_admin_litestar_plugin"]
 combine-as-imports = true
+known-first-party  = ["starlette_admin_litestar_plugin"]
 
 [tool.ruff.format]
-docstring-code-format = true
+docstring-code-format      = true
 docstring-code-line-length = 50
 
 [tool.mypy]
-check_untyped_defs = true
-disallow_any_generics = true
-follow_imports = "silent"
+check_untyped_defs     = true
+disallow_any_generics  = true
+follow_imports         = "silent"
 ignore_missing_imports = true
-no_implicit_reexport = true
-warn_redundant_casts = true
-warn_unused_ignores = true
+no_implicit_reexport   = true
+warn_redundant_casts   = true
+warn_unused_ignores    = true
 
 [tool.commitizen]
-major_version_zero = true                                              #NOTE: This is a temporary setting until we reach v1.0.0
-name = "cz_gitmoji"
-pre_bump_hooks = ["uv lock --upgrade starlette-admin-litestar-plugin"]
-tag_format = "v$version"
+major_version_zero       = true                                                  #NOTE: This is a temporary setting until we reach v1.0.0
+name                     = "cz_gitmoji"
+pre_bump_hooks           = ["uv lock --upgrade starlette-admin-litestar-plugin"]
+tag_format               = "v$version"
 update_changelog_on_bump = true
-version_provider = "pep621"
-version_scheme = "semver2"
+version_provider         = "pep621"
+version_scheme           = "semver2"

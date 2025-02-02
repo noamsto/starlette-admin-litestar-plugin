@@ -1,6 +1,7 @@
 import datetime
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, ClassVar
 
 from starlette.datastructures import FormData
 from starlette.requests import Request
@@ -14,15 +15,7 @@ from starlette_admin.i18n import format_datetime
 
 @dataclass
 class DateTimeUTCField(DateTimeField):
-    """
-    This field is used to represent a value that stores a python datetime.datetime object in UTC.
-    All input values are converted to UTC before storage, and displayed in the user's timezone.
-
-    Parameters:
-        search_format: moment.js format to send for searching. Use None for iso Format
-        output_format: display output format
-        assume_local: If True, assumes input without timezone is in local time
-    """
+    """Custom field for handling datetime values in UTC timezone."""
 
     form_alt_format: str | None = "F j, Y  H:i:S (\\UTC)"
 
@@ -41,8 +34,9 @@ class DateTimeUTCField(DateTimeField):
         except (TypeError, ValueError):
             return None
 
-    async def serialize_value(self, request: Request, value: Any, action: RequestAction) -> str:
-        assert isinstance(value, datetime.datetime), f"Expected datetime, got {type(value)}"
+    async def serialize_value(self, request: Request, value: Any, _action: RequestAction) -> str:
+        if not isinstance(value, datetime.datetime):
+            raise ValueError(f"Expected datetime, got {type(value)}")
 
         # Ensure value has timezone info
         if value.tzinfo is None:
@@ -64,6 +58,10 @@ class GUIDCoverter(ModelConverter):
 
 
 class UUIDModelView(ModelView):
+    exclude_sentinel_column: ClassVar[bool] = True
+    exclude_audit_columns_create_edit: ClassVar[bool] = True
+    exclude_fields_create_edit_default: Sequence[str] = ["created_at", "updated_at"]
+
     def __init__(
         self,
         model: type[Any],
@@ -72,25 +70,18 @@ class UUIDModelView(ModelView):
         label: str | None = None,
         identity: str | None = None,
     ):
-        if self.exclude_fields_from_create:
+        if self.exclude_sentinel_column:
             self.exclude_fields_from_create.append("_sentinel")  # type: ignore[attr-defined]
-        else:
-            self.exclude_fields_from_create = ["_sentinel"]
-
-        if self.exclude_fields_from_edit:
             self.exclude_fields_from_edit.append("_sentinel")  # type: ignore[attr-defined]
-        else:
-            self.exclude_fields_from_edit = ["_sentinel"]
-
-        if self.exclude_fields_from_list:
             self.exclude_fields_from_list.append("_sentinel")  # type: ignore[attr-defined]
-        else:
-            self.exclude_fields_from_list = ["_sentinel"]
-
-        if self.exclude_fields_from_detail:
             self.exclude_fields_from_detail.append("_sentinel")  # type: ignore[attr-defined]
-        else:
-            self.exclude_fields_from_detail = ["_sentinel"]
+
+        if self.exclude_audit_columns_create_edit:
+            self.exclude_fields_from_create.extend(  # type: ignore[attr-defined]
+                ["created_at", "updated_at"]
+            )
+            self.exclude_fields_from_edit.extend(  # type: ignore[attr-defined]
+                ["created_at", "updated_at"]
+            )
 
         super().__init__(model, icon, name, label, identity, GUIDCoverter())
-        print(self.fields)
