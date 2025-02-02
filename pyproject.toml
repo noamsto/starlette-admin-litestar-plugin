@@ -81,9 +81,9 @@ warn_redundant_casts   = true
 warn_unused_ignores    = true
 
 [tool.commitizen]
-major_version_zero       = true                                                  #NOTE: This is a temporary setting until we reach v1.0.0
+major_version_zero       = true                                                          #NOTE: This is a temporary setting until we reach v1.0.0
 name                     = "cz_gitmoji"
-pre_bump_hooks           = ["uv lock --upgrade starlette-admin-litestar-plugin"]
+pre_bump_hooks           = ["uv lock --upgrade-package starlette-admin-litestar-plugin"]
 tag_format               = "v$version"
 update_changelog_on_bump = true
 version_provider         = "pep621"
