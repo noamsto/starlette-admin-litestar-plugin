@@ -3,6 +3,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
+from pydantic import BaseModel, ValidationError
 from starlette.datastructures import FormData
 from starlette.requests import Request
 from starlette_admin import RequestAction
@@ -10,6 +11,7 @@ from starlette_admin.contrib.sqla.converters import ModelConverter
 from starlette_admin.contrib.sqla.view import ModelView
 from starlette_admin.converters import converts
 from starlette_admin.fields import DateTimeField, StringField
+from starlette_admin.helpers import pydantic_error_to_form_validation_errors
 from starlette_admin.i18n import format_datetime
 
 
@@ -24,12 +26,7 @@ class DateTimeUTCField(DateTimeField):
     ) -> datetime.datetime | None:
         try:
             dt = datetime.datetime.fromisoformat(form_data.get(self.id))  # type: ignore
-            if dt.tzinfo is None:
-                # Assume UTC
-                dt = dt.replace(tzinfo=datetime.UTC)
-            else:
-                # Convert to UTC
-                dt = dt.astimezone(datetime.UTC)
+            dt.astimezone()
             return dt
         except (TypeError, ValueError):
             return None
@@ -38,14 +35,12 @@ class DateTimeUTCField(DateTimeField):
         if not isinstance(value, datetime.datetime):
             raise ValueError(f"Expected datetime, got {type(value)}")
 
-        # Ensure value has timezone info
-        if value.tzinfo is None:
-            value = value.replace(tzinfo=datetime.UTC)
-
-        return format_datetime(value, format="%B %d, %Y %H:%M:%S %Z", tzinfo=datetime.UTC)
+        # Make sure datetime have timezone info
+        value = value.astimezone()
+        return format_datetime(value, format="%B %d, %Y %H:%M:%S %Z")
 
 
-class GUIDCoverter(ModelConverter):
+class AdvancedAlchemyCoverter(ModelConverter):
     @converts("GUID")
     def convert_GUID(self, *args, **kwargs) -> StringField:
         return StringField(
@@ -69,7 +64,9 @@ class UUIDModelView(ModelView):
         name: str | None = None,
         label: str | None = None,
         identity: str | None = None,
+        pydantic_model: type[BaseModel] | None = None,
     ):
+        self.pydantic_model = pydantic_model
         if self.exclude_sentinel_column:
             self.exclude_fields_from_create.append("_sentinel")  # type: ignore[attr-defined]
             self.exclude_fields_from_edit.append("_sentinel")  # type: ignore[attr-defined]
@@ -84,4 +81,13 @@ class UUIDModelView(ModelView):
                 ["created_at", "updated_at"]
             )
 
-        super().__init__(model, icon, name, label, identity, GUIDCoverter())
+        super().__init__(model, icon, name, label, identity, AdvancedAlchemyCoverter())
+
+    async def validate(self, request: Request, data: dict[str, Any]) -> None:
+        if not self.pydantic_model:
+            return
+
+        try:
+            self.pydantic_model(**data)
+        except ValidationError as error:
+            raise pydantic_error_to_form_validation_errors(error) from error

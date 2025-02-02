@@ -33,24 +33,14 @@
       (system: let
         pkgs = nixpkgs.legacyPackages.${system};
       in {
-        py312 = devenv.lib.mkShell {
+        py310 = devenv.lib.mkShell {
           inherit inputs pkgs;
           modules = [
-            ({config, ...}: let
-              python-base-packages = [
-                (config.languages.python.package.withPackages (ps: [
-                  ps.ipython
-                  ps.pre-commit-hooks
-                  ps.pickleshare
-                  ps.catppuccin
-                  ps.pygments
-                ]))
-              ];
-            in {
+            ({config, ...}: {
               # This is your devenv configuration
-              packages = (with pkgs; [just pre-commit]) ++ python-base-packages;
+              packages = with pkgs; [just pre-commit];
               languages.python = {
-                version = "3.12";
+                version = "3.10";
                 enable = true;
                 uv = {
                   enable = true;

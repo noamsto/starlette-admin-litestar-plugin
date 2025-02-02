@@ -2,11 +2,12 @@
 description     = "Starlette Admin plugin for LiteStar"
 name            = "starlette-admin-litestar-plugin"
 readme          = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 version         = "0.1.0"
 
 dependencies = [
   "litestar>=2.14.0",
+  "pydantic>=2.10.6",
   "starlette>=0.45.3",
   "starlette-admin>=0.15.0rc5",
 ]
@@ -16,8 +17,13 @@ dev = [
   "deptry>=0.23.0",
   "mypy>=1.14.1",
   "ruff>=0.9.4",
-  "advanced-alchemy>=0.30.3",
+  "advanced-alchemy[nanoid]>=0.30.3",
+  "aiosqlite>=0.20.0",
+  "litestar[standard]>=2.14.0",
 ]
+
+[tool.deptry]
+extend_exclude = ["examples"]
 
 
 [tool.uv]
@@ -49,7 +55,6 @@ select = [
   "T20",   # flake8-print
   "UP",    # pyupgrade
   "W",     # pycodestyle warnings
-  "TC",    # flake8-typing-imports
 ]
 
 [tool.ruff.lint.per-file-ignores]
