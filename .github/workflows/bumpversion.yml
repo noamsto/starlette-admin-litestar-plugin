@@ -17,6 +17,14 @@ jobs:
         with:
           push: false
           extra_requirements: cz-conventional-gitmoji
+          changelog_increment_filename: body.md
       - name: Push using ssh
         run: |
           git push origin main --tags
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: "body.md"
+          tag_name: ${{ env.REVISION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
