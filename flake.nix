@@ -38,7 +38,7 @@
           modules = [
             ({config, ...}: {
               # This is your devenv configuration
-              packages = with pkgs; [just pre-commit];
+              packages = with pkgs; [just pre-commit python3Packages.pre-commit-hooks];
               languages.python = {
                 version = "3.10";
                 enable = true;
