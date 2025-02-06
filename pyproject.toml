@@ -13,6 +13,10 @@ dependencies = [
   "starlette-admin>=0.15.0rc5",
 ]
 
+[project.urls]
+Issues     = "https://github.com/noamsto/starlette-admin-litestar-plugin/issues"
+Repository = "https://github.com/noamsto/starlette-admin-litestar-plugin"
+
 [dependency-groups]
 dev = [
   "deptry>=0.23.0",
@@ -31,6 +35,18 @@ extend_exclude = ["examples"]
 [tool.uv]
 default-groups = ["dev"]
 
+[[tool.uv.index]]
+name = "pypi"
+url  = "https://pypi.org/simple"
+
+[[tool.uv.index]]
+name        = "testpypi"
+publish-url = "https://test.pypi.org/legacy/"
+url         = "https://test.pypi.org/simple/"
+
+[build-system]
+build-backend = "hatchling.build"
+requires      = ["hatchling"]
 
 [tool.hatch.build.targets.wheel]
 packages = [
