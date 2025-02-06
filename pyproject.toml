@@ -1,4 +1,5 @@
 [project]
+authors         = [{ name = "Noam Stolero", email = "noamstolero@gmail.com" }]
 description     = "Starlette Admin plugin for LiteStar"
 name            = "starlette-admin-litestar-plugin"
 readme          = "README.md"
@@ -29,6 +30,13 @@ extend_exclude = ["examples"]
 
 [tool.uv]
 default-groups = ["dev"]
+
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "starlette_admin_litestar_plugin",
+  "starlette_admin_litestar_plugin.ext",
+]
 
 [tool.ruff]
 exclude     = [".git", "__pycache__", "build", "dist"]
