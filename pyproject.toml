@@ -20,9 +20,8 @@ dev = [
   "advanced-alchemy[nanoid]>=0.30.3",
   "aiosqlite>=0.20.0",
   "litestar[standard]>=2.14.0",
-  "commitizen>=4.1.1",
-  "cz-conventional-gitmoji>=0.6.1",
 ]
+release = ["commitizen>=4.1.1", "cz-conventional-gitmoji>=0.6.1"]
 
 [tool.deptry]
 extend_exclude = ["examples"]

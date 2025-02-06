@@ -12,19 +12,27 @@ jobs:
         with:
           fetch-depth: 0
           ssh-key: "${{ secrets.PRIVATE_DEPLOY_KEY }}"
-      - name: Create bump and changelog
-        uses: commitizen-tools/commitizen-action@master
+      - name: Enable caching
+        uses: astral-sh/setup-uv@v5
         with:
-          push: false
-          extra_requirements: cz-conventional-gitmoji
-          changelog_increment_filename: body.md
-      - name: Push using ssh
+          enable-cache: true
+      - name: Install release dependency
+        run: uv sync --only-group release
+      - name: Create bump and changeloga
         run: |
-          git push origin main --tags
+          uv run cz bump
+          new_tag="$(git describe --tags --abbrev=0)"
+          uv run cz changelog $new_tag --file-name body.md
+          echo "TAG_FOR_RELEASE=$new_tag" >> "$GITHUB_ENV"
+          git push origin ${{ github.ref_name }} --tags
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           body_path: "body.md"
-          tag_name: v${{ env.REVISION }}
+          tag_name: ${{ env.REVISION }}
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+      - name: Build
+        run: uv build
+      - name: Publish
+        run: uv publish --token ${{secrets.PYPI_PUBLISH_INIT}}

@@ -1207,12 +1207,14 @@ dependencies = [
 dev = [
     { name = "advanced-alchemy", extra = ["nanoid"] },
     { name = "aiosqlite" },
-    { name = "commitizen" },
-    { name = "cz-conventional-gitmoji" },
     { name = "deptry" },
     { name = "litestar", extra = ["standard"] },
     { name = "mypy" },
     { name = "ruff" },
+]
+release = [
+    { name = "commitizen" },
+    { name = "cz-conventional-gitmoji" },
 ]
 
 [package.metadata]
@@ -1227,12 +1229,14 @@ requires-dist = [
 dev = [
     { name = "advanced-alchemy", extras = ["nanoid"], specifier = ">=0.30.3" },
     { name = "aiosqlite", specifier = ">=0.20.0" },
-    { name = "commitizen", specifier = ">=4.1.1" },
-    { name = "cz-conventional-gitmoji", specifier = ">=0.6.1" },
     { name = "deptry", specifier = ">=0.23.0" },
     { name = "litestar", extras = ["standard"], specifier = ">=2.14.0" },
     { name = "mypy", specifier = ">=1.14.1" },
     { name = "ruff", specifier = ">=0.9.4" },
+]
+release = [
+    { name = "commitizen", specifier = ">=4.1.1" },
+    { name = "cz-conventional-gitmoji", specifier = ">=0.6.1" },
 ]
 
 [[package]]
