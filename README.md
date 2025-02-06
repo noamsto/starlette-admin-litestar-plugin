@@ -1,6 +1,6 @@
 # Starlette Admin Litestar Plugin
 
-[![Python](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org)
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org)
 [![Litestar](https://img.shields.io/badge/Litestar-2.14+-yellow)](https://litestar.dev)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -8,23 +8,18 @@
 [![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-A plugin that integrates [Starlette Admin](https://github.com/jowilf/starlette-admin) with [Litestar](https://litestar.dev/), providing a powerful and flexible admin interface for your Litestar applications.
+A plugin that integrates [Starlette Admin](https://jowilf.github.io/starlette-admin/) with [Litestar](https://litestar.dev/), providing a powerful and flexible admin interface for your Litestar applications.
+
+This project is inspired by and based on [SQLAdmin Litestar Plugin](https://github.com/peterschutt/sqladmin-litestar-plugin) by Peter Schutt.
 
 ## Features
 
-- Seamless integration of Starlette Admin with Litestar
+- Seamless integration with [Starlette Admin](https://jowilf.github.io/starlette-admin/)
 - Support for both sync and async SQLAlchemy engines
-- Customizable admin interface (title, logo, templates, etc.)
-- Internationalization support
-- Authentication provider integration
-- Custom view support
-
-## Requirements
-
-- Python >= 3.12
-- Litestar >= 2.14.0
-- Starlette Admin
-- Advanced Alchemy >= 0.27.1
+- Advanced Alchemy integration with UUID7 support
+- Customizable admin interface
+- Authentication support
+- I18n support
 
 ## Installation
 
@@ -32,95 +27,84 @@ A plugin that integrates [Starlette Admin](https://github.com/jowilf/starlette-a
 pip install starlette-admin-litestar-plugin
 ```
 
-## Quick Start
-
-Here's a basic example of how to use the plugin:
+## Basic Usage
 
 ```python
 from litestar import Litestar
-from starlette_admin_litestar_plugin import StarletteAdminPlugin, StarlettAdminPluginConfig
+from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from starlette_admin.contrib.sqla import ModelView
+from starlette_admin_litestar_plugin import StarlettAdminPluginConfig, StarletteAdminPlugin
 
-# Define your SQLAlchemy models and views
-class UserModel(Base):
-    __tablename__ = "users"
-    # ... model definition
+# Create engine and models
+engine = create_async_engine("sqlite+aiosqlite:///:memory:")
 
-class UserAdmin(ModelView):
-    model = UserModel
-    # ... view configuration
+class Base(DeclarativeBase):
+    pass
 
-# Configure the plugin
+class Product(Base):
+    __tablename__ = "products"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    price: Mapped[int]
+
+# Configure admin
 admin_config = StarlettAdminPluginConfig(
-    title="My Admin Interface",
-    views=[UserAdmin()],
-    engine=engine,  # Your SQLAlchemy engine
+    views=[ModelView(Product)],
+    engine=engine,
+    title="My Admin",
 )
 
-# Create Litestar app with the plugin
+# Create app
 app = Litestar(
     plugins=[StarletteAdminPlugin(starlette_admin_config=admin_config)]
 )
 ```
 
-## Configuration
-
-The `StarlettAdminPluginConfig` class supports the following options:
-
-| Option         | Type                   | Description                   | Default  |
-| -------------- | ---------------------- | ----------------------------- | -------- |
-| views          | Sequence\[ModelView\]  | List of admin views           | \[\]     |
-| engine         | Engine \| AsyncEngine  | SQLAlchemy engine instance    | Required |
-| title          | str                    | Admin interface title         | "Admin"  |
-| base_url       | str                    | Base URL path                 | "/admin" |
-| route_name     | str                    | Name for admin route group    | None     |
-| logo_url       | str                    | Header logo URL               | None     |
-| login_logo_url | str                    | Login page logo URL           | None     |
-| templates_dir  | str                    | Custom templates directory    | None     |
-| statics_dir    | str                    | Custom static files directory | None     |
-| index_view     | CustomView             | Custom index page view        | None     |
-| auth_provider  | BaseAuthProvider       | Authentication provider       | None     |
-| middlewares    | Sequence\[Middleware\] | Additional middlewares        | None     |
-| debug          | bool                   | Enable debug mode             | False    |
-| i18n_config    | I18nConfig             | Internationalization config   | None     |
-| favicon_url    | str                    | Favicon URL                   | None     |
-
-## Authentication
-
-To add authentication to your admin interface:
+## Advanced Alchemy Support! Usage with UUID7 Models
 
 ```python
-from starlette_admin.auth import AuthProvider
+from advanced_alchemy.base import UUIDv7AuditBase
+from pydantic import BaseModel, Field
+from starlette_admin_litestar_plugin.ext.advanced_alchemy import UUIDModelView
 
-class MyAuthProvider(AuthProvider):
-    async def login(self, username: str, password: str) -> bool:
-        # Implement your login logic
-        return True
+# Define model with UUID and audit
+class Product(UUIDv7AuditBase):
+    __tablename__ = "products"
+    name: Mapped[str]
+    price: Mapped[int]
 
-    async def is_authenticated(self, request) -> bool:
-        # Implement your authentication check
-        return True
+# Optional: Add validation
+class ProductInput(BaseModel):
+    name: str = Field(..., max_length=100)
+    price: int = Field(..., ge=0)
 
+# Configure admin with UUID support
 admin_config = StarlettAdminPluginConfig(
-    # ... other config
-    auth_provider=MyAuthProvider(),
+    views=[UUIDModelView(Product, pydantic_model=ProductInput)],
+    engine=engine,
+    title="Advanced Admin",
+)
+
+app = Litestar(
+    plugins=[StarletteAdminPlugin(starlette_admin_config=admin_config)]
 )
 ```
 
-## Custom Views
+See [advanced-alchemy](https://github.com/litestar-org/advanced-alchemy) repo for more info.
 
-You can create custom views by extending `ModelView` or `CustomView`:
+## Configuration Options
 
-```python
-from starlette_admin.contrib.sqla import ModelView
+| Option        | Type                  | Description                 | Default  |
+| ------------- | --------------------- | --------------------------- | -------- |
+| views         | Sequence[ModelView]   | List of admin views         | []       |
+| engine        | Engine \| AsyncEngine | SQLAlchemy engine           | Required |
+| title         | str                   | Admin interface title       | "Admin"  |
+| base_url      | str                   | Base URL path               | "/admin" |
+| auth_provider | BaseAuthProvider      | Authentication provider     | None     |
+| i18n_config   | I18nConfig            | Internationalization config | None     |
 
-class CustomUserAdmin(ModelView):
-    model = User
-    fields = ["id", "username", "email"]
-    fields_exclude = ["password"]
-    search_fields = ["username", "email"]
-    page_size = 25
-```
+For more configuration options and features, please refer to the [Starlette Admin documentation](https://jowilf.github.io/starlette-admin/).
 
 ## Contributing
 
