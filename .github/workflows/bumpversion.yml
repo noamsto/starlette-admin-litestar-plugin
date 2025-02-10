@@ -31,7 +31,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           body_path: "body.md"
-          tag_name: ${{ env.REVISION }}
+          tag_name: ${{ env.TAG_FOR_RELEASE }}
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
       - name: Build
