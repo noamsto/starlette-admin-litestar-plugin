@@ -44,15 +44,6 @@ name        = "testpypi"
 publish-url = "https://test.pypi.org/legacy/"
 url         = "https://test.pypi.org/simple/"
 
-[build-system]
-build-backend = "hatchling.build"
-requires      = ["hatchling"]
-
-[tool.hatch.build.targets.wheel]
-packages = [
-  "starlette_admin_litestar_plugin",
-  "starlette_admin_litestar_plugin.ext",
-]
 
 [tool.ruff]
 exclude     = [".git", "__pycache__", "build", "dist"]
