@@ -35,4 +35,4 @@ jobs:
       - name: Build
         run: uv build
       - name: Publish
-        run: uv publish --token ${{secrets.PYPI_PUBLISH_INIT}}
+        run: uv publish --token ${{secrets.PYPI_PUBLISH}}
