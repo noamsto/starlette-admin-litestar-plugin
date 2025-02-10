@@ -20,6 +20,8 @@ jobs:
         run: uv sync --only-group release
       - name: Create bump and changeloga
         run: |
+          git config --global user.email "noamstolero@gmail.com"
+          git config --global user.name "Noam Stolero"
           uv run cz bump
           new_tag="$(git describe --tags --abbrev=0)"
           uv run cz changelog $new_tag --file-name body.md
