@@ -1,3 +1,9 @@
+## v0.2.1 (2025-02-12)
+
+### ♻️ Refactorings
+
+- rename exclude_audit_columns_create_edit to read_only_audit_columns
+
 ## v0.2.0 (2025-02-10)
 
 ### ✨ Features
