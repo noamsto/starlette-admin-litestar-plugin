@@ -54,7 +54,7 @@ class AdvancedAlchemyCoverter(ModelConverter):
 
 class UUIDModelView(ModelView):
     exclude_sentinel_column: ClassVar[bool] = True
-    exclude_audit_columns_create_edit: ClassVar[bool] = True
+    read_only_audit_columns: ClassVar[bool] = True
     exclude_fields_create_edit_default: Sequence[str] = ["created_at", "updated_at"]
 
     def __init__(
@@ -73,7 +73,7 @@ class UUIDModelView(ModelView):
             self.exclude_fields_from_list.append("_sentinel")  # type: ignore[attr-defined]
             self.exclude_fields_from_detail.append("_sentinel")  # type: ignore[attr-defined]
 
-        if self.exclude_audit_columns_create_edit:
+        if self.read_only_audit_columns:
             self.exclude_fields_from_create.extend(  # type: ignore[attr-defined]
                 ["created_at", "updated_at"]
             )
