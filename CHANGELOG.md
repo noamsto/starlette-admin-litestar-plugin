@@ -1,3 +1,9 @@
+## v0.3.1 (2025-02-19)
+
+### 🐛🚑️ Fixes
+
+- update starlette-admin dependency and remove custom source
+
 ## v0.3.0 (2025-02-19)
 
 ### ✨ Features
