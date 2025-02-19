@@ -1,3 +1,9 @@
+## v0.3.0 (2025-02-19)
+
+### ✨ Features
+
+- add starlette-admin git source to uv config
+
 ## v0.2.1 (2025-02-12)
 
 ### ♻️ Refactorings

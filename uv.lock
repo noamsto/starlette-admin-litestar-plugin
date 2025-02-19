@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.10"
 
 [[package]]
@@ -1190,7 +1191,7 @@ dependencies = [
 
 [[package]]
 name = "starlette-admin-litestar-plugin"
-version = "0.2.1"
+version = "0.3.0"
 source = { editable = "." }
 dependencies = [
     { name = "litestar" },
