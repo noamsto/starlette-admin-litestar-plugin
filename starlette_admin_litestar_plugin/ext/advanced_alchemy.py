@@ -1,5 +1,4 @@
 import datetime
-from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any, ClassVar
 
@@ -55,7 +54,6 @@ class AdvancedAlchemyCoverter(ModelConverter):
 class UUIDModelView(ModelView):
     exclude_sentinel_column: ClassVar[bool] = True
     read_only_audit_columns: ClassVar[bool] = True
-    exclude_fields_create_edit_default: Sequence[str] = ["created_at", "updated_at"]
 
     def __init__(
         self,

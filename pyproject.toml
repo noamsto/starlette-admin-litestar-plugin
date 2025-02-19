@@ -20,7 +20,7 @@ dependencies = [
   "litestar>=2.14.0",
   "pydantic>=2.10.6",
   "starlette>=0.45.3",
-  "starlette-admin>=0.15.0rc5",
+  "starlette-admin>=0.15rc5",
 ]
 
 [project.urls]
@@ -53,9 +53,6 @@ url  = "https://pypi.org/simple"
 name        = "testpypi"
 publish-url = "https://test.pypi.org/legacy/"
 url         = "https://test.pypi.org/simple/"
-
-[tool.uv.sources]
-starlette-admin = { git = "https://github.com/noamsto/starlette-admin", branch = "main" }
 
 
 [tool.ruff]
