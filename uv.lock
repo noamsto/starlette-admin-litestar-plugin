@@ -1180,16 +1180,12 @@ wheels = [
 
 [[package]]
 name = "starlette-admin"
-version = "0.15.0rc5"
-source = { registry = "https://pypi.org/simple" }
+version = "0.15.0rc4"
+source = { git = "https://github.com/noamsto/starlette-admin?branch=main#69aa48067af513cc418cb11272917ab399c8142c" }
 dependencies = [
     { name = "jinja2" },
     { name = "python-multipart" },
     { name = "starlette" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/20/ea/b1927368ef50cfc59bc551893b68d955805999021c15fcc4dbc2c5013381/starlette_admin-0.15.0rc5.tar.gz", hash = "sha256:01e93fea6bb1f269318a0c2ff007b7e29b716506a3639f6230412f374ed5ec68", size = 2111349 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/0d/b4/71b4d62ae85979ae1f648ff1a04298fb17e91293ef19919ad5ae080fbe6e/starlette_admin-0.15.0rc5-py3-none-any.whl", hash = "sha256:d07944c1527176eaee04a01de862c2b4c870f967eaadbd0af399aa4264863db8", size = 2174514 },
 ]
 
 [[package]]
@@ -1222,7 +1218,7 @@ requires-dist = [
     { name = "litestar", specifier = ">=2.14.0" },
     { name = "pydantic", specifier = ">=2.10.6" },
     { name = "starlette", specifier = ">=0.45.3" },
-    { name = "starlette-admin", specifier = ">=0.15.0rc5" },
+    { name = "starlette-admin", git = "https://github.com/noamsto/starlette-admin?branch=main" },
 ]
 
 [package.metadata.requires-dev]

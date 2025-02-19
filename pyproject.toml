@@ -54,6 +54,9 @@ name        = "testpypi"
 publish-url = "https://test.pypi.org/legacy/"
 url         = "https://test.pypi.org/simple/"
 
+[tool.uv.sources]
+starlette-admin = { git = "https://github.com/noamsto/starlette-admin", branch = "main" }
+
 
 [tool.ruff]
 exclude     = [".git", "__pycache__", "build", "dist"]
