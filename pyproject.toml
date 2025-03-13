@@ -24,6 +24,7 @@ dependencies = [
 ]
 
 [project.urls]
+Changelog  = "https://github.com/noamsto/starlette-admin-litestar-plugin/blob/main/CHANGELOG.md"
 Issues     = "https://github.com/noamsto/starlette-admin-litestar-plugin/issues"
 Repository = "https://github.com/noamsto/starlette-admin-litestar-plugin"
 
