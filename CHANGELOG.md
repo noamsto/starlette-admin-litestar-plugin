@@ -1,3 +1,13 @@
+## v0.3.2 (2025-06-02)
+
+### 🐛🚑️ Fixes
+
+- update development environment configuration
+
+### 📝💡 Documentation
+
+- add changelog URL to project metadata
+
 ## v0.3.1 (2025-02-19)
 
 ### 🐛🚑️ Fixes

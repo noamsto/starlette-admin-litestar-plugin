@@ -1194,7 +1194,7 @@ wheels = [
 
 [[package]]
 name = "starlette-admin-litestar-plugin"
-version = "0.3.1"
+version = "0.3.2"
 source = { editable = "." }
 dependencies = [
     { name = "litestar" },
