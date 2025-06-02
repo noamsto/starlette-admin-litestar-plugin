@@ -20,7 +20,7 @@ dependencies = [
   "litestar>=2.14.0",
   "pydantic>=2.10.6",
   "starlette>=0.45.3",
-  "starlette-admin>=0.15rc5",
+  "starlette-admin>=0.15.1",
 ]
 
 [project.urls]
